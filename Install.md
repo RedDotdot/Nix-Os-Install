@@ -56,7 +56,7 @@ Now that all the filesystem is setup we need to create the NixOs config:
 `sudo nixos-generate-config --root /mnt`
 We can then modify the auto-generated config by adding the necessary imports:
 ```nix
-{ config, lib, pkgs, ...}
+{ config, lib, pkgs, ...}:
 {
     imports = [
         ./boot-configuration.nix
