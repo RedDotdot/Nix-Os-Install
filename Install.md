@@ -28,7 +28,7 @@ The instruction will begin in the installation terminal as the previous steps ar
 # Luks encryption
 Luks will act as a layer between the raw partitions that contain some encrypted data and the unencrypted partitions that will be used by the OS.
 - `sudo cryptsetup luksFormat /dev/YOUR_PARTITION_2` to encrypt your root partition,
-  when prompted type `YES` and then <kbd>Enter ⏎ </kbd> two times as the empty passphrase will be disabled when we use tpm
+  when prompted type `YES` and then type your passphrase two times, **be carefull to remember it** as we will need it later.
 - Repeat this process with the third swap partition
 - `sudo cryptsetup config --label LUKSSWAP /dev/$YOUR_PARTITION_2` to name your encrypted root
 - `sudo cryptsetup config --label LUKSROOT /dev/$YOUR_PARTITION_3` to name your encrypted swap
@@ -50,6 +50,13 @@ We can now mount our partitions
 - `sudo mkdir /mnt/boot` #Create a boot directory in our NIXROOT partition
 - `sudo mount /dev/disk/by-label/NIXBOOT /mnt/boot` #Mount NIXBOOT partition to /mnt/boot
 - `sudo swapon /dev/mapper/swap` #Enable the use of the swap partition
+
+# Create clevis entry in luks
+To automate decryption at boot with tpm we need to add clevis as a keyslot in luks:
+- `nix-shell -p clevis tpm2-tools` #Make clevis and tpm2-tools
+- `sudo clevis luks bind -d /dev/disk/by-label/LUKSROOT tpm2 '{}'` #When prompted type the passphrase
+- `sudo clevis luks bind -d /dev/disk/by-label/LUKSSWAP tpm2 '{}'` #When prompted type the passphrase
+- `exit` #Exit nix-shell
 
 # Creating the nix config
 Now that all the filesystem is setup we need to create the NixOs config:
