@@ -27,9 +27,11 @@ The instruction will begin in the installation terminal as the previous steps ar
 
 # Luks encryption
 Luks will act as a layer between the raw partitions that contain some encrypted data and the unencrypted partitions that will be used by the OS.
-- Type `sudo cryptsetup luksFormat /dev/YOUR_PARTITION_2` to encrypt your root partition,
+- `sudo cryptsetup luksFormat /dev/YOUR_PARTITION_2` to encrypt your root partition,
   when prompted type `YES` and then <kbd>Enter ⏎ </kbd> two times as the empty passphrase will be disabled when we use tpm
 - Repeat this process with the third swap partition
+- `sudo cryptsetup config --label LUKSSWAP /dev/$YOUR_PARTITION_2` to name your encrypted root
+- `sudo cryptsetup config --label LUKSROOT /dev/$YOUR_PARTITION_3` to name your encrypted swap
   
 Now that the partitions are formatted with Luks we need to open and map them:
 - `sudo cryptsetup luksOpen /dev/YOUR_PARTITION_2 root` to open the root partition and map it to /dev/mapper/root
@@ -52,4 +54,16 @@ We can now mount our partitions
 # Creating the nix config
 Now that all the filesystem is setup we need to create the NixOs config:
 `sudo nixos-generate-config --root /mnt`
-We can then replace the auto-generated config with the custom one:
+We can then modify the auto-generated config by adding the necessary imports:
+```nix
+{ config, lib, pkgs, ...}
+{
+    imports = [
+        ./boot-configuration.nix
+        ./hardware-configuration.nix
+        ./users-configuration.nix
+    ]
+}
+```
+and leaving the rest as is.
+We then need to copy the configuration files in the same directory as the nixos config files.
