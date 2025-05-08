@@ -7,5 +7,5 @@
     packages = with pkgs; [
       brave
     ];
-  }
+  };
 }
