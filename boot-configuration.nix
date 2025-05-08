@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 {
-  boot.initrdkernelModules = [ "tpm" "tpm_tis" "tpm_crb" ];
+  boot.initrd.kernelModules = [ "tpm" "tpm_tis" "tpm_crb" ];
   boot.initrd.luks.devices."swap".device = "/dev/disk/by-label/LUKSSWAP";
   boot.initrd.extraUtilsCommands = ''
     copy_bin_and_libs ${pkgs.clevis}/bin/clevis
