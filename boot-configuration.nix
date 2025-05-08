@@ -2,7 +2,7 @@
 
 {
   boot.initrdkernelModules = [ "tpm" "tpm_tis" "tpm_crb" ];
-  boot.initrd.luks.device."swap".device = "/dev/disk/by-label/LUKSSWAP";
+  boot.initrd.luks.devices."swap".device = "/dev/disk/by-label/LUKSSWAP";
   boot.initrd.extraUtilsCommands = ''
     copy_bin_and_libs ${pkgs.clevis}/bin/clevis
     copy_bin_and_libs ${pkgs.clevis}/bin/clevis-luks-unlock
