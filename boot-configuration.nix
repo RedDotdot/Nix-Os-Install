@@ -3,14 +3,13 @@
 {
   boot.initrd.kernelModules = [ "tpm" "tpm_tis" "tpm_crb" ];
   boot.initrd.luks.devices."swap".device = "/dev/disk/by-label/LUKSSWAP";
-  boot.initrd.extraUtilsCommands = ''
-    copy_bin_and_libs ${pkgs.clevis}/bin/clevis
-    copy_bin_and_libs ${pkgs.tpm2-tools}/bin/tpm2_unseal
-  '';
+  boot.initrd.systemd.extraBin = {
+    clevis = ${pkgs.clevis}/bin/clevis;
+  };
   boot.initrd.preLVMCommands = ''
     echo "Attempting to auto-unlock root via clevis"
-    clevis luks unlock -d /dev/disk/by-label/LUKSROOT -n root || echo "Clevis unlock failed"
+    ${pkgs.clevis}/bin/clevis luks unlock -d /dev/disk/by-label/LUKSROOT -n root || echo "Clevis unlock failed"
     echo "Attempting to auto-unlock swap via clevis"
-    clevis luks unlock -d /dev/disk/by-label/LUKSSWAP -n swap || echo "Clevis unlock failed"
+    ${pkgs.clevis}/bin/clevis luks unlock -d /dev/disk/by-label/LUKSSWAP -n swap || echo "Clevis unlock failed"
   '';
 }
