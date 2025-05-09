@@ -4,7 +4,7 @@
   boot.initrd.kernelModules = [ "tpm" "tpm_tis" "tpm_crb" ];
   boot.initrd.luks.devices."swap".device = "/dev/disk/by-label/LUKSSWAP";
   boot.initrd.systemd.extraBin = {
-    clevis = ${pkgs.clevis}/bin/clevis;
+    clevis = "${pkgs.clevis}/bin/clevis";
   };
   boot.initrd.preLVMCommands = ''
     echo "Attempting to auto-unlock root via clevis"
