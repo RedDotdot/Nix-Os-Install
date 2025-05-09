@@ -10,7 +10,10 @@
     copy_bin_and_libs ${pkgs.tpm2-tools}/bin/tpm2_unseal
   '';
   boot.initrd.preLVMCommands = ''
+    
     echo "Attempting to auto-unlock root via clevis"
-    clevis-luks-unlock -d /dev/disk/by-uuid/XYZ -n root || echo "Clevis unlock failed"
+    clevis luks unlock -d /dev/disk/by-label/LUKSROOT -n root || echo "Clevis unlock failed"
+    echo "Attempting to auto-unlock swap via clevis"
+    clevis luks unlock -d /dev/disk/by-label/LUKSSWAP -n swap || echo "Clevis unlock failed"
   '';
 }
